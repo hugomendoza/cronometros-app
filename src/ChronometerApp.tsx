@@ -1,13 +1,16 @@
-import { Container } from '@chakra-ui/react'
+import { Container, Divider } from '@chakra-ui/react'
 import { Header } from './components'
 
 const ChronometerApp = () => {
   return (
     <>
-      <Header />
       <Container
         maxW="1280px"
       >
+        <Header />
+        <Divider
+          marginBottom={6}
+        />
         <div>
           <div>
             <h1>Titulo del cronometro</h1>

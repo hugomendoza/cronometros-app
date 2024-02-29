@@ -1,12 +1,14 @@
 import {
   Box,
-  Button,
+  IconButton,
   Flex,
   Heading,
   Spacer,
-  useColorMode
+  useColorMode,
+  ButtonGroup,
+  Tooltip
 } from '@chakra-ui/react'
-import { IconMoon, IconSun } from '@tabler/icons-react'
+import { IconMoon, IconPlus, IconSun } from '@tabler/icons-react'
 
 export const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -16,8 +18,6 @@ export const Header = () => {
       as='header'
       align='center'
       padding={6}
-      maxW={'1280px'}
-      margin='0 auto'
     >
       <Box>
         <Heading
@@ -27,18 +27,29 @@ export const Header = () => {
         </Heading>
       </Box>
       <Spacer />
-      <Box>
-        <Button
+      <ButtonGroup>
+        <Tooltip
+          label='Añadir nuevo cronometro'
+          hasArrow
+        >
+          <IconButton
+            aria-label='toggle color mode'
+            onClick={toggleColorMode}
+            colorScheme='cyan'
+            variant='outline'
+            isRound={true}
+            icon={<IconPlus size={24} />}
+          />
+        </Tooltip>
+        <IconButton
+          aria-label='toggle color mode'
           onClick={toggleColorMode}
           colorScheme='gray'
           variant='outline'
-          width={10}
-          padding={0}
-          borderRadius={100}
-        >
-          { colorMode === 'light' ? <IconSun size={24} /> : <IconMoon size={24} /> }
-        </Button>
-      </Box>
+          isRound={true}
+          icon={colorMode === 'light' ? <IconSun size={24} /> : <IconMoon size={24} />}
+        />
+      </ButtonGroup>
     </Flex>
   )
 }
