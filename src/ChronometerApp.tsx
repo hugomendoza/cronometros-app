@@ -1,9 +1,14 @@
 import { Container, Divider } from '@chakra-ui/react'
-import { Header } from './components'
+import { Header, Aside } from './components'
 
 const ChronometerApp = () => {
   return (
     <>
+      <Aside
+        isOpen={true}
+        onClose={() => {}}
+        size='xs'
+      />
       <Container
         maxW="1280px"
       >
