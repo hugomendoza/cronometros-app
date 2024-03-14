@@ -10,7 +10,11 @@ import {
 } from '@chakra-ui/react'
 import { IconMoon, IconPlus, IconSun } from '@tabler/icons-react'
 
-export const Header = () => {
+interface Props {
+  onOpen: () => void
+}
+
+export const Header = ({ onOpen }:Props) => {
   const { colorMode, toggleColorMode } = useColorMode()
 
   return (
@@ -34,7 +38,7 @@ export const Header = () => {
         >
           <IconButton
             aria-label='toggle color mode'
-            onClick={toggleColorMode}
+            onClick={onOpen}
             colorScheme='cyan'
             variant='outline'
             isRound={true}

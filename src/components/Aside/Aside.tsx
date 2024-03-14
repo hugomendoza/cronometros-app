@@ -8,6 +8,7 @@ import {
   DrawerHeader,
   DrawerOverlay,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Radio,
@@ -15,6 +16,12 @@ import {
   Stack,
   Textarea
 } from '@chakra-ui/react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { FormValues, formSchema } from '@/types'
+import { colorSchemes } from '@/helpers'
+import { useCreateChrono } from '@/hooks'
 
 interface AsideProps {
   isOpen: boolean
@@ -24,6 +31,22 @@ interface AsideProps {
 
 export const Aside = (props:AsideProps) => {
   const { isOpen, onClose, size } = props
+  const { onSubmit } = useCreateChrono()
+
+  const defaultValues:FormValues = {
+    title: '',
+    description: '',
+    colorSchema: ''
+  }
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues
+  })
 
   return (
     <Drawer
@@ -35,40 +58,73 @@ export const Aside = (props:AsideProps) => {
       <DrawerContent>
         <DrawerHeader>Agrega un nuevo cronometro</DrawerHeader>
         <DrawerBody>
-          <form id="form">
-            <FormControl id='name'>
-              <FormLabel>Description</FormLabel>
-              <Input autoFocus />
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            id='form-chrono'
+          >
+            <FormControl
+              marginBottom={4}
+              isInvalid={!!errors.title}
+            >
+              <FormLabel>Título</FormLabel>
+              <Input
+                id='title'
+                {...register('title')}
+              />
+              <FormErrorMessage>
+                {errors?.title?.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl id='description'>
-              <FormLabel>Description</FormLabel>
-              <Textarea />
+            <FormControl
+              marginBottom={4}
+              isInvalid={!!errors.description}
+            >
+              <FormLabel>Descripción</FormLabel>
+              <Textarea
+                id='description'
+                {...register('description')}
+              />
+              <FormErrorMessage>
+                {errors?.description?.message}
+              </FormErrorMessage>
             </FormControl>
             <RadioGroup
               mt={4}
             >
+              <FormLabel>Selecciona un color</FormLabel>
               <Stack
                 spacing={2}
                 direction='row'
               >
-                <Radio value='1' />
-                <Radio value='2' />
-                <Radio value='3' />
-                <Radio value='4' />
+                {colorSchemes.map((color) => (
+                  <Radio
+                    key={color}
+                    value={color}
+                    colorScheme={color}
+                    border={`2px solid ${color}`}
+                    size={'lg'}
+                    {...register('colorSchema')}
+                  />
+                ))}
               </Stack>
             </RadioGroup>
           </form>
         </DrawerBody>
-        <DrawerFooter>
+        <DrawerFooter
+          justifyContent={'flex-start'}
+        >
           <ButtonGroup>
             <Button
               type='submit'
-              form='form'
+              form='form-chrono'
+              isLoading={isSubmitting}
               colorScheme='blue'
             >
               Crear
             </Button>
-            <Button>
+            <Button
+              colorScheme='red'
+            >
               Cancelar
             </Button>
           </ButtonGroup>

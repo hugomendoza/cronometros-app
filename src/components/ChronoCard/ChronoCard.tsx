@@ -1,10 +1,25 @@
-import { Box, ButtonGroup, Card, CardBody, CardFooter, CardHeader, Heading, IconButton, Text } from '@chakra-ui/react'
-import { IconEdit, IconGridDots, IconPlayerPlay, IconTrash } from '@tabler/icons-react'
+import {
+  Box,
+  ButtonGroup,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Heading,
+  IconButton,
+  Text
+} from '@chakra-ui/react'
+
+import {
+  IconEdit,
+  IconGridDots,
+  IconPlayerPlay,
+  IconTrash
+} from '@tabler/icons-react'
 
 export const ChronoCard = () => {
   return (
-    <Card
-    >
+    <Card>
       <CardHeader
         padding={4}
         display={'flex'}
