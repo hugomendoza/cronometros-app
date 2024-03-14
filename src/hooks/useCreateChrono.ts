@@ -3,7 +3,7 @@ import useChronometerStore from '@/store/store'
 import { FormValues } from '@/types'
 
 export const useCreateChrono = () => {
-  const { createCronometer } = useChronometerStore(state => state)
+  const { createCronometer, openDrawer, setOpenDrawer } = useChronometerStore(state => state)
 
   const onSubmit = (values:FormValues) => {
     createCronometer({
@@ -16,9 +16,12 @@ export const useCreateChrono = () => {
       minutes: 0,
       hours: 0
     })
+    setOpenDrawer(false)
   }
 
   return {
+    openDrawer,
+    setOpenDrawer,
     onSubmit
   }
 }

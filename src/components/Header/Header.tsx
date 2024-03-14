@@ -1,3 +1,4 @@
+import useChronometerStore from '@/store/store'
 import {
   Box,
   IconButton,
@@ -10,12 +11,13 @@ import {
 } from '@chakra-ui/react'
 import { IconMoon, IconPlus, IconSun } from '@tabler/icons-react'
 
-interface Props {
-  onOpen: () => void
-}
-
-export const Header = ({ onOpen }:Props) => {
+export const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode()
+  const { setOpenDrawer } = useChronometerStore(state => state)
+
+  const onOpenDrawer = () => {
+    setOpenDrawer(true)
+  }
 
   return (
     <Flex
@@ -38,7 +40,7 @@ export const Header = ({ onOpen }:Props) => {
         >
           <IconButton
             aria-label='toggle color mode'
-            onClick={onOpen}
+            onClick={onOpenDrawer}
             colorScheme='cyan'
             variant='outline'
             isRound={true}

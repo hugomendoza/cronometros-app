@@ -13,5 +13,7 @@ export interface Chronometer {
 
 export interface ChronometersState {
   chronometers: Chronometer[];
+  openDrawer: boolean;
+  setOpenDrawer: (isOpen: boolean) => void;
   createCronometer: (by: Chronometer) => void;
 }

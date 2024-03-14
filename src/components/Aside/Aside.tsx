@@ -25,13 +25,12 @@ import { useCreateChrono } from '@/hooks'
 
 interface AsideProps {
   isOpen: boolean
-  onClose: () => void
   size?: string
 }
 
 export const Aside = (props:AsideProps) => {
-  const { isOpen, onClose, size } = props
-  const { onSubmit } = useCreateChrono()
+  const { size, isOpen } = props
+  const { onSubmit, setOpenDrawer } = useCreateChrono()
 
   const defaultValues:FormValues = {
     title: '',
@@ -42,7 +41,7 @@ export const Aside = (props:AsideProps) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    formState: { errors }
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues
@@ -51,8 +50,8 @@ export const Aside = (props:AsideProps) => {
   return (
     <Drawer
       isOpen={isOpen}
-      onClose={onClose}
       size={size}
+      onClose={() => {}}
     >
       <DrawerOverlay />
       <DrawerContent>
@@ -117,13 +116,13 @@ export const Aside = (props:AsideProps) => {
             <Button
               type='submit'
               form='form-chrono'
-              isLoading={isSubmitting}
               colorScheme='blue'
             >
               Crear
             </Button>
             <Button
               colorScheme='red'
+              onClick={() => setOpenDrawer(false)}
             >
               Cancelar
             </Button>

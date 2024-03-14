@@ -1,3 +1,5 @@
+import { zeroPad } from '@/helpers'
+import { Chronometer } from '@/types'
 import {
   Box,
   ButtonGroup,
@@ -7,17 +9,93 @@ import {
   CardHeader,
   Heading,
   IconButton,
-  Text
+  Text,
+  useColorModeValue
 } from '@chakra-ui/react'
 
 import {
   IconEdit,
   IconGridDots,
+  IconPlayerPause,
   IconPlayerPlay,
   IconTrash
 } from '@tabler/icons-react'
+import { useState } from 'react'
 
-export const ChronoCard = () => {
+interface PropsTimer {
+  miliseconds: number;
+  seconds: number;
+  minutes: number;
+  hours: number;
+}
+
+export const ChronoCard = (props:Chronometer) => {
+  const {
+    title,
+    description,
+    colorSchema,
+    miliseconds,
+    minutes,
+    hours,
+    seconds
+  } = props
+
+  const color = useColorModeValue(`${colorSchema}.400`, `${colorSchema}.200`)
+  const [running, setRunning] = useState<boolean>(false)
+  const [timer, setTimer] = useState<PropsTimer>({
+    miliseconds,
+    seconds,
+    minutes,
+    hours
+  })
+  const [intervalId, setIntervalId] = useState<number | null>(null)
+
+  const tick = () => {
+    setTimer(prev => {
+      let { miliseconds, seconds, minutes, hours } = prev
+      miliseconds = (miliseconds + 1) % 100
+      if (miliseconds === 0) {
+        seconds = (seconds + 1) % 60
+        if (seconds === 0) {
+          minutes = (minutes + 1) % 60
+          if (minutes === 0) {
+            hours = (hours + 1) % 24
+          }
+        }
+      }
+      return {
+        miliseconds,
+        seconds,
+        minutes,
+        hours
+      }
+    })
+  }
+
+  const handleStart = () => {
+    if (!running) {
+      const id = setInterval(tick, 10)
+      setIntervalId(id)
+      setRunning(true)
+    }
+  }
+
+  const handleStop = () => {
+    if (running && intervalId !== null) {
+      clearInterval(intervalId)
+      setIntervalId(null)
+      setRunning(false)
+    }
+  }
+
+  const startChrono = () => {
+    if (running) {
+      handleStop()
+    } else {
+      handleStart()
+    }
+  }
+
   return (
     <Card>
       <CardHeader
@@ -32,11 +110,15 @@ export const ChronoCard = () => {
             as={'h3'}
             noOfLines={1}
             size={'sm'}
+            color={color}
           >
-            Titulo del cronometro largo muy largo
+            {title}
           </Heading>
-          <Text fontSize={'sm'}>
-            Descripción del cronometro
+          <Text
+            fontSize={'sm'}
+            color={color}
+          >
+            {description}
           </Text>
         </Box>
         <Box
@@ -56,8 +138,9 @@ export const ChronoCard = () => {
           fontSize={'4xl'}
           fontWeight={'bold'}
           lineHeight={1}
+          color={color}
         >
-          00:00:00
+          {zeroPad(timer.hours)}:{zeroPad(timer.minutes)}:{zeroPad(timer.seconds)}
         </Text>
       </CardBody>
       <CardFooter
@@ -84,10 +167,13 @@ export const ChronoCard = () => {
             colorScheme='cyan'
             height={12}
             width={12}
+            onClick={startChrono}
           >
-            <IconPlayerPlay
-              color='white'
-            />
+            {
+              !running
+                ? <IconPlayerPlay color='white' />
+                : <IconPlayerPause color='white'/>
+            }
           </IconButton>
           <IconButton
             aria-label='Start'
