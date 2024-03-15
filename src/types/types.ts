@@ -17,3 +17,10 @@ export interface ChronometersState {
   setOpenDrawer: (isOpen: boolean) => void;
   createCronometer: (by: Chronometer) => void;
 }
+
+export interface PropsTimer {
+  milisegundos: number;
+  segundos: number;
+  minutos: number;
+  horas: number;
+}

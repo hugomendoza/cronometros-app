@@ -1,4 +1,5 @@
 import { zeroPad } from '@/helpers'
+import { useHandleChrono } from '@/hooks'
 import { Chronometer } from '@/types'
 import {
   Box,
@@ -20,81 +21,23 @@ import {
   IconPlayerPlay,
   IconTrash
 } from '@tabler/icons-react'
-import { useState } from 'react'
-
-interface PropsTimer {
-  miliseconds: number;
-  seconds: number;
-  minutes: number;
-  hours: number;
-}
 
 export const ChronoCard = (props:Chronometer) => {
   const {
     title,
     description,
-    colorSchema,
-    miliseconds,
-    minutes,
-    hours,
-    seconds
+    colorSchema
   } = props
 
+  const { startChrono, timer, running } = useHandleChrono()
+
+  const {
+    horas,
+    minutos,
+    segundos
+  } = timer
+
   const color = useColorModeValue(`${colorSchema}.400`, `${colorSchema}.200`)
-  const [running, setRunning] = useState<boolean>(false)
-  const [timer, setTimer] = useState<PropsTimer>({
-    miliseconds,
-    seconds,
-    minutes,
-    hours
-  })
-  const [intervalId, setIntervalId] = useState<number | null>(null)
-
-  const tick = () => {
-    setTimer(prev => {
-      let { miliseconds, seconds, minutes, hours } = prev
-      miliseconds = (miliseconds + 1) % 100
-      if (miliseconds === 0) {
-        seconds = (seconds + 1) % 60
-        if (seconds === 0) {
-          minutes = (minutes + 1) % 60
-          if (minutes === 0) {
-            hours = (hours + 1) % 24
-          }
-        }
-      }
-      return {
-        miliseconds,
-        seconds,
-        minutes,
-        hours
-      }
-    })
-  }
-
-  const handleStart = () => {
-    if (!running) {
-      const id = setInterval(tick, 10)
-      setIntervalId(id)
-      setRunning(true)
-    }
-  }
-
-  const handleStop = () => {
-    if (running && intervalId !== null) {
-      clearInterval(intervalId)
-      setIntervalId(null)
-      setRunning(false)
-    }
-  }
-
-  const startChrono = () => {
-    if (running) {
-      handleStop()
-    } else {
-      handleStart()
-    }
-  }
 
   return (
     <Card>
@@ -110,13 +53,13 @@ export const ChronoCard = (props:Chronometer) => {
             as={'h3'}
             noOfLines={1}
             size={'sm'}
-            color={color}
+            color={`${color === '' ? 'linkedin' : color}`}
           >
             {title}
           </Heading>
           <Text
             fontSize={'sm'}
-            color={color}
+            color={`${color === '' ? 'linkedin' : color}`}
           >
             {description}
           </Text>
@@ -140,7 +83,7 @@ export const ChronoCard = (props:Chronometer) => {
           lineHeight={1}
           color={color}
         >
-          {zeroPad(timer.hours)}:{zeroPad(timer.minutes)}:{zeroPad(timer.seconds)}
+          {zeroPad(horas)}:{zeroPad(minutos)}:{zeroPad(segundos)}
         </Text>
       </CardBody>
       <CardFooter
