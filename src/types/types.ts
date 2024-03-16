@@ -1,21 +1,19 @@
 export interface Chronometer {
-  editChronometer: boolean;
   title: string;
   description: string;
   id: string;
-  running: boolean;
-  minutes: number;
-  hours: number;
-  seconds: number;
-  miliseconds: number;
   colorSchema: string;
 }
 
 export interface ChronometersState {
   chronometers: Chronometer[];
   openDrawer: boolean;
+  editChrono: boolean;
+  activeChrono: Chronometer;
   setOpenDrawer: (isOpen: boolean) => void;
   createCronometer: (by: Chronometer) => void;
+  editChronometer: (active: boolean) => void;
+  setActiveChrono: (id: string) => void;
 }
 
 export interface PropsTimer {

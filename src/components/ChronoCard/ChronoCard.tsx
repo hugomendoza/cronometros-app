@@ -1,5 +1,6 @@
 import { zeroPad } from '@/helpers'
 import { useHandleChrono } from '@/hooks'
+import useChronometerStore from '@/store/store'
 import { Chronometer } from '@/types'
 import {
   Box,
@@ -24,6 +25,7 @@ import {
 
 export const ChronoCard = (props:Chronometer) => {
   const {
+    id,
     title,
     description,
     colorSchema
@@ -37,7 +39,22 @@ export const ChronoCard = (props:Chronometer) => {
     segundos
   } = timer
 
-  const color = useColorModeValue(`${colorSchema}.400`, `${colorSchema}.200`)
+  const {
+    editChronometer,
+    setOpenDrawer,
+    setActiveChrono
+  } = useChronometerStore(state => state)
+
+  const onEdit = (id:string) => {
+    editChronometer(true)
+    setOpenDrawer(true)
+    setActiveChrono(id)
+  }
+
+  const color = useColorModeValue(`
+  ${colorSchema === '' ? 'linkedin' : colorSchema}.400`,
+  `${colorSchema === '' ? 'linkedin' : colorSchema}.200
+  `)
 
   return (
     <Card>
@@ -53,13 +70,13 @@ export const ChronoCard = (props:Chronometer) => {
             as={'h3'}
             noOfLines={1}
             size={'sm'}
-            color={`${color === '' ? 'linkedin' : color}`}
+            color={color}
           >
             {title}
           </Heading>
           <Text
             fontSize={'sm'}
-            color={`${color === '' ? 'linkedin' : color}`}
+            color={color}
           >
             {description}
           </Text>
@@ -101,6 +118,7 @@ export const ChronoCard = (props:Chronometer) => {
             colorScheme='teal'
             height={12}
             width={12}
+            onClick={() => onEdit(id)}
           >
             <IconEdit color='white' />
           </IconButton>

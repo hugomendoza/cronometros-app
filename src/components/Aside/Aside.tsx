@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import {
   Button,
   ButtonGroup,
@@ -18,10 +19,10 @@ import {
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useCreateChrono } from '@/hooks'
+import { colorSchemes } from '@/helpers'
 
 import { FormValues, formSchema } from '@/types'
-import { colorSchemes } from '@/helpers'
-import { useCreateChrono } from '@/hooks'
 
 interface AsideProps {
   isOpen: boolean
@@ -30,7 +31,15 @@ interface AsideProps {
 
 export const Aside = (props:AsideProps) => {
   const { size, isOpen } = props
-  const { onSubmit, setOpenDrawer } = useCreateChrono()
+  const {
+    onSubmit,
+    editChrono,
+    activeChrono,
+    setOpenDrawer,
+    editChronometer
+  } = useCreateChrono()
+
+  const { title, description, colorSchema } = activeChrono
 
   const defaultValues:FormValues = {
     title: '',
@@ -41,11 +50,32 @@ export const Aside = (props:AsideProps) => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    reset,
+    setValue,
+    formState: {
+      errors,
+      isSubmitSuccessful
+    }
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues
   })
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset(defaultValues)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSubmitSuccessful, reset])
+
+  useEffect(() => {
+    if (editChrono) {
+      setValue('title', title)
+      setValue('description', description)
+      setValue('colorSchema', colorSchema)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editChrono, activeChrono])
 
   return (
     <Drawer
@@ -89,6 +119,7 @@ export const Aside = (props:AsideProps) => {
             </FormControl>
             <RadioGroup
               mt={4}
+              defaultValue={colorSchema}
             >
               <FormLabel>Selecciona un color</FormLabel>
               <Stack
@@ -118,11 +149,15 @@ export const Aside = (props:AsideProps) => {
               form='form-chrono'
               colorScheme='blue'
             >
-              Crear
+              {`${editChrono ? 'Guardar' : 'Crear'}`}
             </Button>
             <Button
               colorScheme='red'
-              onClick={() => setOpenDrawer(false)}
+              onClick={() => {
+                setOpenDrawer(false)
+                editChronometer(false)
+                reset(defaultValues)
+              }}
             >
               Cancelar
             </Button>
